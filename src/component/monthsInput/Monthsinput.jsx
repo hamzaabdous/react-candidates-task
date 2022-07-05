@@ -1,28 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import monthsinput from "./monthsinput.css";
 import { BiChevronLeft, BiChevronRight } from "react-icons/bi";
 import useState from "react-usestateref";
 
-export const Monthsinput = () => {
-  var [month, setMonth, monthRef] = useState(0);
+export const Monthsinput = ({
+  min_tenure,
+  max_tenure,
+  setmonth,
+  setMonthlyAmount,
+  totalAmountRef,
+  amountRef,
+}) => {
+  var [month, setMonth, monthRef] = useState(min_tenure);
 
   function na9is() {
-    if (monthRef.current<1) {
-      setMonth(0);
-    }
-    else{
-      setMonth(monthRef.current - 1);
+    if (monthRef.current <= min_tenure) {
+      setMonth(min_tenure);
+      setmonth(min_tenure);
+      setMonthlyAmount(totalAmountRef / monthRef.current);
+    } else {
+      setMonth(parseInt(monthRef.current) - 1);
+      setmonth(monthRef.current);
+      setMonthlyAmount(totalAmountRef / monthRef.current);
     }
     console.log(monthRef.current);
   }
   function za2id() {
-    if (monthRef.current>11) {
-      setMonth(12);
-    }
-    else{
-      setMonth(monthRef.current + 1);
+    if (parseInt(monthRef.current) >= max_tenure) {
+      setMonth(max_tenure);
+      setmonth(max_tenure);
+      setMonthlyAmount(totalAmountRef / monthRef.current);
+    } else {
+      setMonth(parseInt(monthRef.current) + 1);
+      setmonth(monthRef.current);
+      setMonthlyAmount(totalAmountRef / monthRef.current);
     }
     console.log(monthRef.current);
+  }
+  function checkDivesion(month, amount) {
+    if (month != 0) {
+      setMonthlyAmount(totalAmountRef / monthRef.current);
+    }
+    if (amount == 0 || month == 0) {
+      setMonthlyAmount(0);
+    }
   }
   return (
     <>
@@ -41,17 +62,18 @@ export const Monthsinput = () => {
                 </span>
               </button>
               <input
-                max={12}
-                min={0}
-                value={month}
+                max={max_tenure}
+                min={min_tenure}
+                value={monthRef.current}
                 onChange={(event) => {
                   setMonth(event.target.value);
-                  console.log(monthRef.current);
+                  setmonth(event.target.value);
+                  checkDivesion(monthRef.current,amountRef)
+                  console.log("setMonthlyAmount", totalAmountRef.current /   monthRef.current);
                 }}
                 type="number"
                 className="outline-none focus:outline-none text-center w-full bg-white font-Work-Sans text-md hover:text-blue-Gray-400 focus:text-blue-Gray-400  md:text-basecursor-default flex items-center text-blue-Gray-400  outline-none"
                 name="custom-input-number"
-                defaultValue={0}
               />
               <button
                 onClick={za2id}
